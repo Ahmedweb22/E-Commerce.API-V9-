@@ -1,0 +1,13 @@
+﻿global using E_Commerce.API_V9_.Models;
+global using E_Commerce.API_V9_.DataAccess;
+global using E_Commerce.API_V9_.DTOs.Requests;
+global using E_Commerce.API_V9_.DTOs.Responses;
+global using Microsoft.EntityFrameworkCore;
+global using E_Commerce.API_V9_.Utilities;
+global using System.ComponentModel.DataAnnotations;
+global using E_Commerce.API_V9_.ValidationAttributes;
+global using E_Commerce.API_V9_.Repositories;
+global using E_Commerce.API_V9_.Repositories.IRepositories;
+global using E_Commerce.API_V9_.Services;
+global using E_Commerce.API_V9_.Services.IServices;
+global using E_Commerce.API_V9_.Utilities.DbInitialization;
