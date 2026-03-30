@@ -1,7 +1,10 @@
 
+using System.Text;
 using E_Commerce.API_V9_.Utilities.DbInitialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Stripe;
 using Product = E_Commerce.API_V9_.Models.Product;
@@ -28,7 +31,7 @@ namespace E_Commerce.API_V9_
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-                options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedEmail = false;
                 options.Password.RequiredLength = 8;
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
@@ -65,6 +68,29 @@ namespace E_Commerce.API_V9_
 
             StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
 
+            builder.Services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = "https://localhost:7284",
+                    ValidAudience = "https://localhost:7284",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("QVeEgVkjRtK2RznXiRuLbCeJlDWp11MG57ktMvt7/dE=")),
+                    ClockSkew = TimeSpan.Zero
+                };
+                });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -75,7 +101,7 @@ namespace E_Commerce.API_V9_
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
             var scope = app.Services.CreateScope();
             var service = scope.ServiceProvider.GetService<IDbInitilizer>();

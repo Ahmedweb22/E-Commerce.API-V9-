@@ -22,7 +22,7 @@ namespace E_Commerce.API_V9_.Utilities
             {
                 _context.Database.Migrate();
             }
-            if (_roleManager.Roles.IsNullOrEmpty())
+            if (_roleManager.Roles.Any())
             {
                await _roleManager.CreateAsync(new IdentityRole(SD.ROLE_SUPER_ADMIN));
                 await _roleManager.CreateAsync(new IdentityRole(SD.ROLE_ADMIN));
