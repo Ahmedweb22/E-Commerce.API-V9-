@@ -127,7 +127,7 @@ namespace E_Commerce.API_V9_.Areas.Identity
                   issuer: "https://localhost:7284",
                   audience: "https://localhost:7284",
                   claims: claims,
-                  expires: DateTime.Now.AddMinutes(20),
+                  expires: DateTime.Now.AddMinutes(50),
                   signingCredentials: signingCredentials
                   );
             return Ok(new
