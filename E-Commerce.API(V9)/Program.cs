@@ -56,8 +56,10 @@ namespace E_Commerce.API_V9_
             builder.Services.AddScoped<IProductSubImgRepository, ProductSubImgRepository>();
             builder.Services.AddScoped<IRepository<ApplicationUserOTP>, Repository<ApplicationUserOTP>>();
             builder.Services.AddScoped<IRepository<Cart>, Repository<Cart>>();
+            builder.Services.AddScoped<IRepository<Order>, Repository<Order>>();
+            builder.Services.AddScoped<IRepository<OrderItem>, Repository<OrderItem>>();    
             builder.Services.AddScoped<IRepository<Promotion>, Repository<Promotion>>();
-
+        
 
 
             builder.Services.AddScoped<IAccountService, Services.AccountService>();

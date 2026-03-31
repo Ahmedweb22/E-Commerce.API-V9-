@@ -200,7 +200,7 @@ namespace E_Commerce.API_V9_.Areas.Identity
             var userOtpsCount = (await _otpRepository.GetAsync(e => user.Id == e.UserId && e.CreateAt >= DateTime.UtcNow.AddHours(-24))).Count();
             if (!user.EmailConfirmed)
             {
-             return BadRequest(new ErrorResponce()
+             return BadRequest(new ErrorResponse()
              {
                     ErrorMsg = "Please confirm your email before resetting your password."
                 });
@@ -223,7 +223,7 @@ namespace E_Commerce.API_V9_.Areas.Identity
             }
             else if (userOtpsCount >= 5)
             {
-                return BadRequest(new ErrorResponce()
+                return BadRequest(new ErrorResponse()
                 {
                     ErrorMsg = "You have exceeded the maximum number of OTP requests. Please try again later."
                 });

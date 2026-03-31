@@ -57,7 +57,7 @@ namespace E_Commerce.API_V9_.Areas.Customer
             return Ok(new ProductWithRelatedResponse
             {
                 Product = product,
-                SameCategories = sameBrands.ToList(),
+                SameCategories = sameCategories.ToList(),
                 SamePrices = samePrice.ToList(),
                 RelatedProducts = relatedProducts.ToList(),
             });
