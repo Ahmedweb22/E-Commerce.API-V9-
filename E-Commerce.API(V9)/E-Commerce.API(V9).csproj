@@ -26,5 +26,6 @@
 
  <ItemGroup>
    <Folder Include="wwwroot\img\brand_logos\" />
+   <Folder Include="wwwroot\img\rates\" />
  </ItemGroup>
 </Project>

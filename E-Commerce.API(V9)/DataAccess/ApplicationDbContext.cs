@@ -19,7 +19,8 @@ namespace E_Commerce.API_V9_.DataAccess
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
-
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<ReviewImg> ReviewImgs { get; set; }
 
     }
 }

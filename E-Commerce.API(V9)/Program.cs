@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Stripe;
 using Product = E_Commerce.API_V9_.Models.Product;
+using Review = E_Commerce.API_V9_.Models.Review;
 
 namespace E_Commerce.API_V9_
 {
@@ -59,7 +60,9 @@ namespace E_Commerce.API_V9_
             builder.Services.AddScoped<IRepository<Order>, Repository<Order>>();
             builder.Services.AddScoped<IRepository<OrderItem>, Repository<OrderItem>>();    
             builder.Services.AddScoped<IRepository<Promotion>, Repository<Promotion>>();
-        
+            builder.Services.AddScoped<IRepository<Review>, Repository<Review>>();
+            builder.Services.AddScoped<IRepository<ReviewImg>, Repository<ReviewImg>>();
+
 
 
             builder.Services.AddScoped<IAccountService, Services.AccountService>();

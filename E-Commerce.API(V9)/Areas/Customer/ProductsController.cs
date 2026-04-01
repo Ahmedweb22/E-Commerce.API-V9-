@@ -9,10 +9,12 @@ namespace E_Commerce.API_V9_.Areas.Customer
     public class ProductsController : ControllerBase
     {
         private readonly IRepository<Product> _productRepository;
+        private readonly IRepository<Review> _reviewRepository;
 
-        public ProductsController(IRepository<Product> productRepository)
+        public ProductsController(IRepository<Product> productRepository, IRepository<Review> reviewRepository)
         {
             _productRepository = productRepository;
+            _reviewRepository = reviewRepository;
         }
         [HttpGet]
         public async Task<IActionResult> Get(int? categoryId)
@@ -34,7 +36,7 @@ namespace E_Commerce.API_V9_.Areas.Customer
         [HttpGet("{id}")]
         public async Task<IActionResult> Details(int id)
         {
-            //var product = _context.Products.SingleOrDefault(e => e.Id == id);
+         
                 var product = await _productRepository.GetOneAsync(e => e.Id == id);
             if (product is null)
                 return NotFound();
@@ -52,7 +54,7 @@ namespace E_Commerce.API_V9_.Areas.Customer
                 .Skip(0)
                .Take(4);
 
-
+            var reviews = await _reviewRepository.GetAsync(e => e.ProductId == product.Id);
 
             return Ok(new ProductWithRelatedResponse
             {
@@ -60,6 +62,7 @@ namespace E_Commerce.API_V9_.Areas.Customer
                 SameCategories = sameCategories.ToList(),
                 SamePrices = samePrice.ToList(),
                 RelatedProducts = relatedProducts.ToList(),
+                Reviews = reviews
             });
         }
     }

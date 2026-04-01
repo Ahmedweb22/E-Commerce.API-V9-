@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
+using Review = E_Commerce.API_V9_.Models.Review;
 
 namespace E_Commerce.API_V9_.Areas.Customer
 {
@@ -14,10 +15,14 @@ namespace E_Commerce.API_V9_.Areas.Customer
     {
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<OrderItem> _orderItemRepository;
-        public OrdersController(IRepository<Order> orderRepository , IRepository<OrderItem> orderItemRepository)
+        private readonly IRepository<Review> _reviewRepository;
+        private readonly IRepository<ReviewImg> _reviewImgRepository;
+        public OrdersController(IRepository<Order> orderRepository , IRepository<OrderItem> orderItemRepository, IRepository<Review> reviewRepository, IRepository<ReviewImg> reviewImgRepository)
         {
             _orderRepository = orderRepository;
             _orderItemRepository = orderItemRepository;
+            _reviewRepository = reviewRepository;
+            _reviewImgRepository = reviewImgRepository;
         }
         // Show all order
         [HttpGet]
@@ -98,7 +103,62 @@ namespace E_Commerce.API_V9_.Areas.Customer
         }
 
         //Rate
+        [HttpPost("Rate")]
+        public async Task<IActionResult> Rate([FromForm] ReviewCreateRequest model)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+                return NotFound();
 
+            var userOrders = (await _orderRepository.GetAsync(e => e.ApplicationUserId == userId && e.OrderStatus == OrderStatus.completed)).Select(e => e.Id);
+            List<int> orderItems = [];
+            foreach (var item in userOrders)
+            {
+                orderItems.AddRange((await _orderItemRepository.GetAsync(e => e.OrderId == item)).Select(e => e.Id));
+            }
+            if (orderItems.Contains(model.ProductId))
+            {
+                var review = new Review()
+                {
+                    ApplicationUserId = userId,
+                    ProductId = model.ProductId,
+                    Rate = model.Rate,
+                    Comment = model.Comment,
+                };
+                await _reviewRepository.CreateAsync(review);
+                await _reviewRepository.CommitAsync();
+                if (model.Imgs is not null && model.Imgs.Any())
+                {
+                    foreach (var img in model.Imgs)
+                    {
+                        var newFileName = Guid.NewGuid().ToString() + DateTime.UtcNow.ToString("yyyy-MM-dd") + Path.GetExtension(img.FileName);
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img\\rates", newFileName);
+                        using (var stream = System.IO.File.Create(filePath))
+                        {
+                            img.CopyTo(stream);
+                        }
+                       var reviewImg = new ReviewImg()
+                        {
+                            ReviewId = review.Id,
+                            Img = newFileName
+                        };
+                        await _reviewImgRepository.CreateAsync(reviewImg);
+                        await _reviewImgRepository.CommitAsync();
+                    }
+                }
+                return Ok( new SuccessResponse()
+                {
+                    Msg = "Review submitted successfully"
+                });
+            }
+            else
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    ErrorMsg = "You can't rate this product because you haven't bought it yet",
+                });
+            }
 
+        }
     }
 }
