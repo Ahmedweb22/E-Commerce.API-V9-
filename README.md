@@ -61,6 +61,7 @@ Additionally, the UI is organized using **ASP.NET Core Areas** to separate diffe
   - Email Sender
   - DB Initializer & Seeders
   - Validation Attributes
+  - SD
 
 ---
 
@@ -99,6 +100,7 @@ Additionally, the UI is organized using **ASP.NET Core Areas** to separate diffe
 - Dependency Injection
 - Repository Pattern
 - Clean Code & SOLID Principles
+- Scalar & PostMan
 - Stripe Payment Gateway
 ---
 
