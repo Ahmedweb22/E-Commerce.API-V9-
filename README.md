@@ -124,7 +124,9 @@ Update the following in appsettings.json:
 1. Clone the repository
    git clone(https://github.com/Ahmedweb22/E-Commerce.API-V9-)
 
-3. Update connection string in `appsettings.json`
+2. Update connection string in `appsettings.json`
+   
+3. Add your Stripe keys in secret.json
 
 4. Apply migrations
 
