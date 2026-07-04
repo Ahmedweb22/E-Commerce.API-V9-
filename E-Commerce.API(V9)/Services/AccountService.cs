@@ -1,8 +1,12 @@
-﻿using System.Security.Policy;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Policy;
+using System.Text;
 using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace E_Commerce.API_V9_.Services
 {
@@ -38,6 +42,31 @@ namespace E_Commerce.API_V9_.Services
             {
                 await _emailSender.SendEmailAsync(applicationUser.Email!, "Forget Password", msg);
             }
+        }
+        public string GenerateAccessToken(IEnumerable<Claim> claims)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("QVeEgVkjRtK2RznXiRuLbCeJlDWp11MG57ktMvt7/dE="));
+            var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                  issuer: "https://localhost:7284",
+                  audience: "https://localhost:7284",
+                  claims: claims,
+                  expires: DateTime.Now.AddMinutes(50),
+                  signingCredentials: signingCredentials
+                  );
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            return tokenString;
+        }
+
+        public string GenerateRefreshToken()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        {
+            throw new NotImplementedException();
         }
     }
 }

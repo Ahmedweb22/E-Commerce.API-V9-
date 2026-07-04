@@ -120,20 +120,11 @@ namespace E_Commerce.API_V9_.Areas.Identity
             {
                 claims.Add(new(ClaimTypes.Role, role));
             }
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("QVeEgVkjRtK2RznXiRuLbCeJlDWp11MG57ktMvt7/dE="));
-            var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                  issuer: "https://localhost:7284",
-                  audience: "https://localhost:7284",
-                  claims: claims,
-                  expires: DateTime.Now.AddMinutes(50),
-                  signingCredentials: signingCredentials
-                  );
+        var  accessToken = _accountService.GenerateAccessToken(claims);
             return Ok(new
             {
                 Msg = $"Welcome back {user.UserName}!",
-            token = new JwtSecurityTokenHandler().WriteToken(token),
+            token = accessToken,
             AccesstokenExpireIn = "33 min"
 
         });
